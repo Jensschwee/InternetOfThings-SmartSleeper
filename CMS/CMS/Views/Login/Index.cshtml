@@ -1,0 +1,26 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model CMS.Models.LoginModel 
+
+<div>
+    @using (Html.BeginForm("Login", "Login", FormMethod.Post))
+    {
+        <div class="form-group">
+            <div class="form-control">
+                <label for="txtUsername">Username</label>
+                <input type="text" asp-for="Username" id="txtUsername" placeholder="Username" required />
+            </div>
+            <div class="form-control">
+                <label for="txtPassword">Password</label>
+                <input type="password" asp-for="Password" id="txtPassword" required />
+            </div>
+            <div>
+                <input type="submit" class="btn-primary" value="Logion" />
+            </div>
+        </div>
+    }
+</div>

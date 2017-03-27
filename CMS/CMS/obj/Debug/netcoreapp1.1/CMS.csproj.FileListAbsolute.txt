@@ -1,0 +1,9 @@
+C:\Skole\Opgaver\IoT\CMS\CMS\bin\Debug\netcoreapp1.1\CMS.deps.json
+C:\Skole\Opgaver\IoT\CMS\CMS\bin\Debug\netcoreapp1.1\CMS.runtimeconfig.json
+C:\Skole\Opgaver\IoT\CMS\CMS\bin\Debug\netcoreapp1.1\CMS.runtimeconfig.dev.json
+C:\Skole\Opgaver\IoT\CMS\CMS\bin\Debug\netcoreapp1.1\CMS.dll
+C:\Skole\Opgaver\IoT\CMS\CMS\obj\Debug\netcoreapp1.1\CMS.csprojResolveAssemblyReference.cache
+C:\Skole\Opgaver\IoT\CMS\CMS\obj\Debug\netcoreapp1.1\CMS.AssemblyInfo.cs
+C:\Skole\Opgaver\IoT\CMS\CMS\bin\Debug\netcoreapp1.1\CMS.pdb
+C:\Skole\Opgaver\IoT\CMS\CMS\obj\Debug\netcoreapp1.1\CMS.dll
+C:\Skole\Opgaver\IoT\CMS\CMS\obj\Debug\netcoreapp1.1\CMS.pdb
