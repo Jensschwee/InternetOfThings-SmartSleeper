@@ -3,20 +3,19 @@
 *@
 @{
 }
-
-@model CMS.Models.LoginModel 
+@model CMS.Models.LoginModel
 
 <div>
     @using (Html.BeginForm("Login", "Login", FormMethod.Post))
     {
-        <div class="form-group">
-            <div class="form-control">
-                <label for="txtUsername">Username</label>
-                <input type="text" asp-for="Username" id="txtUsername" placeholder="Username" required />
+        <div>
+            <div class="form-group">
+                <label class="form-inline" for="txtUsername">Username</label>
+                <input class="form-control" type="text" asp-for="Username" id="txtUsername" placeholder="Username" required />
             </div>
-            <div class="form-control">
-                <label for="txtPassword">Password</label>
-                <input type="password" asp-for="Password" id="txtPassword" required />
+            <div class="form-group">
+                <label class="form-inline" for="txtPassword">Password</label>
+                <input class="form-control" type="password" asp-for="Password" id="txtPassword" required />
             </div>
             <div>
                 <input type="submit" class="btn-primary" value="Logion" />

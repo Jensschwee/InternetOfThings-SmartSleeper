@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -49,12 +50,24 @@ namespace CMS
 
             app.UseStaticFiles();
 
+            app.UseCookieAuthentication(new CookieAuthenticationOptions()
+            {
+                AuthenticationScheme = "SmartSleeper",
+                LoginPath = new PathString("/Login/Index/"),
+                AccessDeniedPath = new PathString("/Login/Index/"),
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
+                CookieName = "SmartSleeper",
+                ExpireTimeSpan = new TimeSpan(TimeSpan.TicksPerDay)
+            });
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Login}/{action=Index}/{id?}");
+                    template: "{controller=Board}/{action=Index}/{id?}");
             });
+           
         }
     }
 }
