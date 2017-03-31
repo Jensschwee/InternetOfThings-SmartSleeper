@@ -132,6 +132,26 @@ void printDouble(double val, unsigned int precision){
     SerialUSB.println(frac,DEC) ;
 }
 
+/**
+ * used to bitify an int.
+ * input is the int to bitify
+ * the amont of bits to bitify
+ * averagingBuffer boolean array to save the result in 
+ */
+void bitify(unsigned int input,unsigned int bitSize, boolean *averagingBuffer){
+  SerialUSB.print(bitSize);
+  for (int i=bitSize-1; i >= 0; i--){
+    if(input >= pow(2,i))
+    {
+      averagingBuffer[i] = true;
+      input -= pow(2,i);
+    }
+    else{
+      averagingBuffer[i] = false;
+    }
+  }
+}
+
 
 /**
  * Ensure that data is within a certain range.
