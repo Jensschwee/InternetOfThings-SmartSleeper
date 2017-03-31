@@ -16,13 +16,13 @@ void setup() {
 }
 
 void loop() {
-  
+  delay(1000);
 }
 
 /**
  * Read the temperature sensor, returns a float
  */
-float readTemperature() {
+float readTemp() {
   return smeHumidity.readTemperature();
 }
 
@@ -38,7 +38,7 @@ int transformTemperature(float temperature) {
   temperature += 163.84f;
   temperature *= 100;
   int transformedTemp = (int) temperature;
-  transformedTemp = ensureDatarange(0, 32766, transformedTemp)
+  transformedTemp = ensureDatarange(0, 32766, transformedTemp);
   return transformedTemp;
 }
 
@@ -47,7 +47,7 @@ int transformTemperature(float temperature) {
  * Datarange: 0.00 - 163.83
  * Size: 14 bits
  */
-float readHumidity() {
+float readHum() {
   return smeHumidity.readHumidity();
 }
 
@@ -62,7 +62,7 @@ float readHumidity() {
 int transformHumidity(float humidity) {
   humidity *= 100;
   int transformedHumidity = (int) humidity;
-  transformedHumidity = ensureDatarange(0, 16383, transformedHumidity)
+  transformedHumidity = ensureDatarange(0, 16383, transformedHumidity);
   return transformedHumidity;
 }
 
@@ -71,17 +71,38 @@ int transformHumidity(float humidity) {
  * This sensor have 11 bits to take in the datastrame.
  * Datarange of 0-2047
  */
-int readBarometer() {
+float readBarometer() {
   return smePressure.readPressure();
 }
 
+int transformPressure(float pressure) {
+  int transformedPressure = (int) pressure;
+  transformedPressure = ensureDatarange(0, 2047, transformedPressure);
+  return transformedPressure;
+}
+
 /**
- * Read the Lux sensor returns a float, in other to get the lux value you need to / 100000
+ * Read the Lux sensor returns a float, in other to get the lux value you need to / 10000
  * This sensor have 20 bits to take in the datastrame.
- * Datarange of 0.0-104652.7
+ * Datarange of 0.00-10465.27
  */
-int readLux(){
-  return smeAmbient.ligthPollingRead()*10;
+float readLux() {
+  return smeAmbient.ligthPollingRead() / 10000.0;
+}
+
+/**
+ * Transform humidity measurements:
+ * Input datarange: 0.00 - 10465.27
+ * Output datarange: 0 - 1046527
+ * Size: 14 bits
+ * 
+ * TODO: Put some hardcoded values in '#define's
+ */
+int transformLux(float lux) {
+  lux *= 100;
+  int transformedLux = (int) lux;
+  transformedLux = ensureDatarange(0, 1046527, transformedLux);
+  return transformedLux;
 }
 
 /**
@@ -89,7 +110,7 @@ int readLux(){
  *  NOTE: precision is 1 followed by the number of zeros for the desired number of decimal places
  *  example: printDouble( 3.1415, 100); // prints 3.14 (two decimal places)
  */
-void printDouble( double val, unsigned int precision){
+void printDouble(double val, unsigned int precision){
     SerialUSB.print (int(val));  //prints the int part
     SerialUSB.print("."); // print the decimal point
     unsigned int frac;
