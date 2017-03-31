@@ -6,6 +6,16 @@
 #include <LPS25H.h>
 #include <VL6180.h>
 
+#define SIGFOX_FRAME_LENGTH 12
+#define INTERVAL 1000
+#define DEBUG 1
+
+struct data {
+  bool tempBits[15];
+  bool luxBits[20];
+  bool humBits[14];
+  bool psmBits[11];
+};
 
 void setup() {
   Wire.begin();
@@ -17,8 +27,24 @@ void setup() {
 }
 
 void loop() {
-  delay(1000);
-  SerialUSB.println(timeStatus());
+  int temperature = transformTemperature(readTemp());
+  int lux =  transformLux(readLux());
+  int hum = transformHumidity(readHum());
+  int psm = transformPressure(readBarometer());
+  
+  data frame;
+  
+  bitify(temperature,15,frame.tempBits);
+  bitify(lux,20,frame.luxBits);
+  bitify(hum,14,frame.humBits);
+  bitify(psm,11,frame.psmBits);
+  
+  SerialUSB.println(temperature + "\n");
+  SerialUSB.println(lux + "\n");
+  SerialUSB.println(hum + "\n");
+  SerialUSB.println(psm + "\n");
+  
+  delay(INTERVAL);
 }
 
 /**
