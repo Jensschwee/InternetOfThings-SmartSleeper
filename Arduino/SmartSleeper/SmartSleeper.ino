@@ -1,5 +1,6 @@
 #include <Wire.h>
 #include <Arduino.h>
+#include <Time.h>
 
 #include <HTS221.h>
 #include <LPS25H.h>
@@ -17,6 +18,7 @@ void setup() {
 
 void loop() {
   delay(1000);
+  SerialUSB.println(timeStatus());
 }
 
 /**
