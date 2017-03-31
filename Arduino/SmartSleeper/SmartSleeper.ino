@@ -4,18 +4,13 @@
 #include <HTS221.h>
 #include <LPS25H.h>
 #include <VL6180.h>
-#include <Arduino.h>
 
 
 void setup() {
   Wire.begin();
   pinMode(PIN_LED_13, OUTPUT);
   smePressure.begin();
-  if (!smeAmbient.begin()) {
-    while(1){
-      ; // endless loop due to error on VL6180 initialization
-    }
-  }
+  smeAmbient.begin();
   smeHumidity.begin();
   SerialUSB.begin(115200);
 }
@@ -25,34 +20,50 @@ void loop() {
 }
 
 /**
- * Read the temperatire sensor, returns a float
+ * Read the temperature sensor, returns a float
  */
 float readTemperature() {
   return smeHumidity.readTemperature();
 }
 
 /**
- * Transform temperature measurements to the following
- * Datarange: -163.84 - 163.83
+ * Transform temperature measurements:
+ * Input datarange: -163.84 - 163.83
+ * Output datarange: 0 - 32766
  * Size: 15 bits
+ * 
+ * TODO: Put some hardcoded values in '#define's
  */
 int transformTemperature(float temperature) {
-  int data = 0
-  data
-  return data
+  temperature += 163.84f;
+  temperature *= 100;
+  int transformedTemp = (int) temperature;
+  transformedTemp = ensureDatarange(0, 32766, transformedTemp)
+  return transformedTemp;
 }
 
 /**
- * Read the temperatire sensor, returns a float
+ * Read the humidity sensor, returns a float
  * Datarange: 0.00 - 163.83
  * Size: 14 bits
- * 
- * TODO: Ensure range
- * TODO: Ensure size
  */
 float readHumidity() {
-  retu data = smeHumidity.readHumidity();
-  return data;
+  return smeHumidity.readHumidity();
+}
+
+/**
+ * Transform humidity measurements:
+ * Input datarange: 0.00 - 163.83
+ * Output datarange: 0 - 16383
+ * Size: 14 bits
+ * 
+ * TODO: Put some hardcoded values in '#define's
+ */
+int transformHumidity(float humidity) {
+  humidity *= 100;
+  int transformedHumidity = (int) humidity;
+  transformedHumidity = ensureDatarange(0, 16383, transformedHumidity)
+  return transformedHumidity;
 }
 
 /**
@@ -60,7 +71,7 @@ float readHumidity() {
  * This sensor have 11 bits to take in the datastrame.
  * Datarange of 0-2047
  */
-int readBarometer(){
+int readBarometer() {
   return smePressure.readPressure();
 }
 
@@ -96,5 +107,24 @@ void printDouble( double val, unsigned int precision){
         SerialUSB.print("0");
 
     SerialUSB.println(frac,DEC) ;
+}
+
+
+/**
+ * Ensure that data is within a certain range.
+ * Transform the data to an int before using this if you have a float.
+ * 
+ * min: lower bound
+ * max: higher bound
+ * value: surprise, this is the value to check! :D
+ */
+int ensureDatarange(int min, int max, int value) {
+  if(value < min) {
+    value = min;
+  }
+  else if(value > max) {
+    value = max;
+  }
+  return value;
 }
 
