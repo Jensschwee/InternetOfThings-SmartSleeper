@@ -2,19 +2,17 @@
 #include <Arduino.h>
 
 #include <HTS221.h>
-
+#include <LPS25H.h>
 
 void setup() {
   Wire.begin();
   pinMode(PIN_LED_13, OUTPUT);
-  
+  smePressure.begin();
   smeHumidity.begin();
-
   SerialUSB.begin(115200);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
   
 }
 
@@ -49,3 +47,13 @@ float readHumidity() {
   float data = smeHumidity.readHumidity();
   return data;
 }
+
+/**
+ * Read the Barometer sensor returns a int
+ * This sensor have 11 bits to take in the datastrame.
+ * Datarange of 0-2047
+ */
+int readBarometer(){
+    return smePressure.readPressure();
+}
+
