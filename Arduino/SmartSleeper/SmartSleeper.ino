@@ -23,17 +23,21 @@ void loop() {
 
 /**
  * Read the temperatire sensor, returns a float
- * Datarange: -163.84 - 163.83
- * Size: 15 bits
- * 
- * TODO: Ensure range, also transform with +163.84
- * TODO: Ensure size
  */
 float readTemperature() {
-  float data = smeHumidity.readTemperature();
-  return data;
+  return smeHumidity.readTemperature();
 }
 
+/**
+ * Transform temperature measurements to the following
+ * Datarange: -163.84 - 163.83
+ * Size: 15 bits
+ */
+int transformTemperature(float temperature) {
+  int data = 0
+  data
+  return data
+}
 
 /**
  * Read the temperatire sensor, returns a float
@@ -44,7 +48,7 @@ float readTemperature() {
  * TODO: Ensure size
  */
 float readHumidity() {
-  float data = smeHumidity.readHumidity();
+  retu data = smeHumidity.readHumidity();
   return data;
 }
 
