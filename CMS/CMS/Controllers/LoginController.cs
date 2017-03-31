@@ -14,6 +14,7 @@ namespace CMS.Controllers
     {
         public IActionResult Index()
         {
+            ViewData["title"] = "Login";
             return View();
         }
 
