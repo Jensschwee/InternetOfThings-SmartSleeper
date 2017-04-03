@@ -10,6 +10,7 @@
 #define DEBUG 1
 
 struct data {
+  boolean patting[4];
   boolean tempBits[15];
   boolean luxBits[20];
   boolean humBits[14];
@@ -30,8 +31,6 @@ void setup() {
 }
 
 void loop() {
-  SerialUSB.println(millis());
-
   int temperature = transformTemperature(readTemp());
   int lux =  transformLux(readLux());
   int hum = transformHumidity(readHum());
@@ -39,17 +38,18 @@ void loop() {
 
   data frame;
 
+  bitify(0, 4, frame.patting);
   bitify(temperature, 15, frame.tempBits);
   bitify(lux, 20, frame.luxBits);
   bitify(hum, 14, frame.humBits);
   bitify(psm, 11, frame.psmBits);
-
+  
   SerialUSB.println(getSigfoxFrame(&frame, sizeof(data)));
   SerialUSB.println(sizeof(data));
   //bool answer = sendSigfox(&frame, sizeof(data));
 
   //SerialUSB.println(temperature);
-  //SerialUSB.println(lux);
+  //SerialUSB.println(frame.tempBits);
   //SerialUSB.println(hum);
   //SerialUSB.println(psm);
 
@@ -227,12 +227,7 @@ void initSigfox() {
 
 String getSigfoxFrame(const void* data, uint8_t len) {
   String frame = "";
-  byte* bytes = (byte*)data;
-  SerialUSB.println("bytes:");
-  SerialUSB.println(sizeof(bytes));
-  SerialUSB.println("len:");
-  SerialUSB.println(len);
-
+  bool* bytes = (bool*)data;
   /*if (len < SIGFOX_FRAME_LENGTH) {
     //fill with zeros
     uint8_t i = SIGFOX_FRAME_LENGTH;
@@ -241,15 +236,33 @@ String getSigfoxFrame(const void* data, uint8_t len) {
     }
   }*/
 
+  
   //0-1 == 255 --> (0-1) > len
   for (uint8_t i = len - 1; i < len; --i) {
     if (bytes[i] < 16) {
-      frame += "0";
+      //frame += "0";
     }
+    
     frame += String(bytes[i], HEX);
   }
 
-  return frame;
+  const char* binary = frame.c_str();
+  char hex[17] = "" ;
+  
+  uint32_t integer = 0 ;
+  
+  for( int i = 0; binary[i+1] != '\0'; i++ )
+  {
+      if( binary[i] == '1' )
+      {
+          integer |= 1 ;
+      }
+      integer <<= 1 ;
+  }
+
+  sprintf( hex, "0x%06x", integer ) ;
+  SerialUSB.println(hex);
+  return hex;
 }
 
 bool sendSigfox(const void* data, uint8_t len) {
