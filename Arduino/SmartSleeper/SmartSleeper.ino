@@ -1,11 +1,9 @@
-#include <Wire.h>
-#include <Arduino.h>
-#include <Time.h>
-
 #include <HTS221.h>
 #include <LPS25H.h>
 #include <VL6180.h>
 
+#include <Wire.h>
+#include <Arduino.h>
 
 void setup() {
   Wire.begin();
@@ -14,11 +12,17 @@ void setup() {
   smeAmbient.begin();
   smeHumidity.begin();
   SerialUSB.begin(115200);
+
+  SigFox.begin(19200);
+  
+  initSigfox();
 }
 
 void loop() {
-  delay(1000);
-  SerialUSB.println(timeStatus());
+  delay(10000);
+  SerialUSB.println(millis());
+  
+  //bool answer = sendSigfox(&frame, sizeof(data));
 }
 
 /**
@@ -170,4 +174,9 @@ int ensureDatarange(int min, int max, int value) {
   }
   return value;
 }
+
+
+
+
+
 
