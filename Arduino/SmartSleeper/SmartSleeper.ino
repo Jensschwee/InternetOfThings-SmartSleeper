@@ -26,7 +26,7 @@ void setup() {
 
   SigFox.begin(19200);
   
-  initSigfox();
+  //initSigfox();
 }
 
 void loop() {
