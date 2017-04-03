@@ -5,6 +5,17 @@
 #include <Wire.h>
 #include <Arduino.h>
 
+#define SIGFOX_FRAME_LENGTH 12
+#define INTERVAL 1000
+#define DEBUG 1
+
+struct data {
+  bool tempBits[15];
+  bool luxBits[20];
+  bool humBits[14];
+  bool psmBits[11];
+};
+
 void setup() {
   Wire.begin();
   pinMode(PIN_LED_13, OUTPUT);
@@ -19,10 +30,29 @@ void setup() {
 }
 
 void loop() {
-  delay(10000);
   SerialUSB.println(millis());
   
+  int temperature = transformTemperature(readTemp());
+  int lux =  transformLux(readLux());
+  int hum = transformHumidity(readHum());
+  int psm = transformPressure(readBarometer());
+  
+  data frame;
+  
+  bitify(temperature,15,frame.tempBits);
+  bitify(lux,20,frame.luxBits);
+  bitify(hum,14,frame.humBits);
+  bitify(psm,11,frame.psmBits);
+
+  SerialUSB.println(getSigfoxFrame(&frame, sizeof(data)));
   //bool answer = sendSigfox(&frame, sizeof(data));
+  
+  SerialUSB.println(temperature + "\n");
+  SerialUSB.println(lux + "\n");
+  SerialUSB.println(hum + "\n");
+  SerialUSB.println(psm + "\n");
+  
+  delay(INTERVAL);
 }
 
 /**
@@ -177,6 +207,73 @@ int ensureDatarange(int min, int max, int value) {
 
 
 
+void initSigfox() {
+  SigFox.print("+++");
+  while (!SigFox.available()) {
+    delay(100);
+  }
+  while (SigFox.available()) {
+    byte serialByte = SigFox.read();
+    if (DEBUG){
+      SerialUSB.print(serialByte);
+    }
+  }
+  if (DEBUG) {
+    SerialUSB.println("\n ** Setup OK **");
+  }
+}
+
+String getSigfoxFrame(const void* data, uint8_t len){
+  String frame = "";
+  uint8_t* bytes = (uint8_t*)data;
+  
+  if (len < SIGFOX_FRAME_LENGTH){
+    //fill with zeros
+    uint8_t i = SIGFOX_FRAME_LENGTH;
+    while (i-- > len){
+      frame += "00";
+    }
+  }
+
+  //0-1 == 255 --> (0-1) > len
+  for(uint8_t i = len-1; i < len; --i) {
+    if (bytes[i] < 16) {frame+="0";}
+    frame += String(bytes[i], HEX);
+  }
+  
+  return frame;
+}
+
+bool sendSigfox(const void* data, uint8_t len){
+  String frame = getSigfoxFrame(data, len);
+  String status = "";
+  char output;
+  if (DEBUG){
+    SerialUSB.print("AT$SF=");
+    SerialUSB.println(frame);
+  }
+  SigFox.print("AT$SF=");
+  SigFox.print(frame);
+  SigFox.print("\r");
+  while (!SigFox.available());
+  
+  while(SigFox.available()){
+    output = (char)SigFox.read();
+    status += output;
+    delay(10);
+  }
+  if (DEBUG){
+    SerialUSB.print("Status \t");
+    SerialUSB.println(status);
+  }
+  if (status == "OK\r"){
+    //Success :)
+    return true;
+  }
+  else{
+    return false;
+  }
+}
 
 
 
