@@ -5,12 +5,11 @@
 #include <Wire.h>
 #include <Arduino.h>
 
-#define SIGFOX_FRAME_LENGTH 12
-#define INTERVAL 1000
+#define SIGFOX_MAX_FRAME_LENGTH 12
+#define INTERVAL 60000
 #define DEBUG 1
 
 struct data {
-  boolean patting[4];
   boolean tempBits[15];
   boolean luxBits[20];
   boolean humBits[14];
@@ -27,7 +26,7 @@ void setup() {
 
   SigFox.begin(19200);
 
-  //initSigfox();
+  initSigfox();
 }
 
 void loop() {
@@ -38,20 +37,19 @@ void loop() {
 
   data frame;
 
-  bitify(0, 4, frame.patting);
   bitify(temperature, 15, frame.tempBits);
   bitify(lux, 20, frame.luxBits);
   bitify(hum, 14, frame.humBits);
   bitify(psm, 11, frame.psmBits);
 
-  SerialUSB.println(getSigfoxFrame(&frame, sizeof(data)));
-  SerialUSB.println(sizeof(data));
-  //bool answer = sendSigfox(&frame, sizeof(data));
+  bool answer = sendSigfox(&frame, sizeof(data));
 
-  //SerialUSB.println(temperature);
-  //SerialUSB.println(frame.tempBits);
-  //SerialUSB.println(hum);
-  //SerialUSB.println(psm);
+  SerialUSB.println(temperature);
+  SerialUSB.println(lux);
+  SerialUSB.println(hum);
+  SerialUSB.println(psm);
+  
+  SerialUSB.println(millis());
 
   delay(INTERVAL);
 }
@@ -221,68 +219,38 @@ void initSigfox() {
     }
   }
   if (DEBUG) {
-    SerialUSB.println("\n ** Setup OK **");
+    SerialUSB.println(" ** Setup OK **");
   }
 }
 
 String getSigfoxFrame(const void* data, uint8_t len) {
+  String hex = "";
   String frame = "";
-  String test = "";
 
-  int dataSize = len / 8;
-
+  // Transform struct to char array.
   // Nakket fra: http://stackoverflow.com/a/13775983
-  char b[dataSize];
-  memcpy(b, data, dataSize);
+  char b[len];
+  memcpy(b, data, len);
   
-  //0-1 == 255 --> (0-1) > len
-  for (uint8_t i = dataSize - 1; i < dataSize; --i) {
-    SerialUSB.println(dataSize);
-    frame += String(b[i], HEX);
-  }
-
-  
-  SerialUSB.println(frame);
-
-
-  uint8_t* bytes = (uint8_t*)data;
-  
-  if (len < SIGFOX_FRAME_LENGTH){
-    //fill with zeros
-    uint8_t i = SIGFOX_FRAME_LENGTH;
-    while (i-- > len){
-      test += "00";
+  // Encode array to hexadecimal string
+  for (uint8_t i = len - 1; (i) < len; i-=8) {
+    uint8_t byteValue = 0;
+    
+    for(int bitIndex = 8; bitIndex > 0; bitIndex--) {
+      byteValue |= (uint8_t) b[i + bitIndex];
+      byteValue <<= 1;
     }
+    
+    if (byteValue < 16) {
+      hex += "0";
+    }
+    hex += String(byteValue, HEX);
   }
-
-  //0-1 == 255 --> (0-1) > len
-  for(uint8_t i = len-1; i < len; --i) {
-    if (bytes[i] < 16) {test+="0";}
-    test += String(bytes[i], HEX);
-  }
-  
-  /*
-  const char* binary = frame.c_str();
-  char hex[17] = "" ;
-  
-  uint32_t integer = 0 ;
-  
-  for( int i = 0; binary[i+1] != '\0'; i++ )
-  {
-      if( binary[i] == '1' )
-      {
-          integer |= 1;
-      }
-      integer <<= 1;
-  }
-
-  sprintf( hex, "0x%06x", integer ) ;
-  SerialUSB.println(hex);*/
-  return test;
+  return hex;
 }
 
 bool sendSigfox(const void* data, uint8_t len) {
-  String frame = getSigfoxFrame(data, len);
+  String frame = getSigfoxFrame(data, len);  
   String status = "";
   char output;
   if (DEBUG) {
