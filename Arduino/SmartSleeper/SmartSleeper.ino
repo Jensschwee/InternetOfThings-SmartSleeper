@@ -43,7 +43,7 @@ void loop() {
   bitify(lux, 20, frame.luxBits);
   bitify(hum, 14, frame.humBits);
   bitify(psm, 11, frame.psmBits);
-  
+
   SerialUSB.println(getSigfoxFrame(&frame, sizeof(data)));
   SerialUSB.println(sizeof(data));
   //bool answer = sendSigfox(&frame, sizeof(data));
@@ -227,25 +227,41 @@ void initSigfox() {
 
 String getSigfoxFrame(const void* data, uint8_t len) {
   String frame = "";
-  bool* bytes = (bool*)data;
-  /*if (len < SIGFOX_FRAME_LENGTH) {
-    //fill with zeros
-    uint8_t i = SIGFOX_FRAME_LENGTH;
-    while (i-- > len) {
-      frame += "00";
-    }
-  }*/
+  String test = "";
 
+  int dataSize = len / 8;
+
+  // Nakket fra: http://stackoverflow.com/a/13775983
+  char b[dataSize];
+  memcpy(b, data, dataSize);
   
   //0-1 == 255 --> (0-1) > len
-  for (uint8_t i = len - 1; i < len; --i) {
-    if (bytes[i] < 16) {
-      //frame += "0";
-    }
-    
-    frame += String(bytes[i], HEX);
+  for (uint8_t i = dataSize - 1; i < dataSize; --i) {
+    SerialUSB.println(dataSize);
+    frame += String(b[i], HEX);
   }
 
+  
+  SerialUSB.println(frame);
+
+
+  uint8_t* bytes = (uint8_t*)data;
+  
+  if (len < SIGFOX_FRAME_LENGTH){
+    //fill with zeros
+    uint8_t i = SIGFOX_FRAME_LENGTH;
+    while (i-- > len){
+      test += "00";
+    }
+  }
+
+  //0-1 == 255 --> (0-1) > len
+  for(uint8_t i = len-1; i < len; --i) {
+    if (bytes[i] < 16) {test+="0";}
+    test += String(bytes[i], HEX);
+  }
+  
+  /*
   const char* binary = frame.c_str();
   char hex[17] = "" ;
   
@@ -255,14 +271,14 @@ String getSigfoxFrame(const void* data, uint8_t len) {
   {
       if( binary[i] == '1' )
       {
-          integer |= 1 ;
+          integer |= 1;
       }
-      integer <<= 1 ;
+      integer <<= 1;
   }
 
   sprintf( hex, "0x%06x", integer ) ;
-  SerialUSB.println(hex);
-  return hex;
+  SerialUSB.println(hex);*/
+  return test;
 }
 
 bool sendSigfox(const void* data, uint8_t len) {
