@@ -50,7 +50,6 @@ namespace CMS.Controllers
         public IActionResult BoardRegister(BoardModel board)
         {
             var identity = (ClaimsIdentity)User.Identity;
-
             bool isSaved = boardDal.SendtBoardRegister(board, identity.Name).Result;
             //if (isSaved)
             return RedirectToAction("Index", "Board");

@@ -29,7 +29,7 @@ namespace CMS.Controllers
         {
             bool isLoginValided = _userBackend.Login(login.Username, login.Password).Result;
 
-            if (!isLoginValided)
+            if (isLoginValided)
             {
                 var identity = new ClaimsIdentity("SmartSleeper");
                 identity.AddClaim(new Claim(ClaimTypes.Name, login.Username));

@@ -18,12 +18,27 @@ namespace CMS.DAL
                 client.BaseAddress = new Uri(Backend.GetBackendBaseAdress() + "device/register/" + currentUser + "/" + board.DeviceId + "/" + board.Name);
                 HttpResponseMessage response = await client.PostAsync(client.BaseAddress, null);
                 if (response.IsSuccessStatusCode)
-                {
                     return true;
-                }
             }
             return false;
         }
+
+        public async Task<List<BoardModel>> GetAllBoards(string currentUser)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Backend.GetBackendBaseAdress() + "/user/devices/" + currentUser);
+                HttpResponseMessage response = await client.GetAsync("");
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                }
+                return null;
+            }
+            return null;
+        }
+
+
 
     }
 }
