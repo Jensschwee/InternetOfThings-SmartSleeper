@@ -224,18 +224,12 @@ void initSigfox() {
 }
 
 String getSigfoxFrame(const void* data, uint8_t len) {
-  String hex = "";
   String frame = "";
 
   // Transform struct to char array.
   // Nakket fra: http://stackoverflow.com/a/13775983
   char b[len];
   memcpy(b, data, len);
-
-  // Add padding if necessary
-  //if(len % 8 <= 4) {
-  //  hex += "0";
-  //}
   
   // Encode array to hexadecimal string
   uint8_t byteValue = 0;
@@ -247,14 +241,13 @@ String getSigfoxFrame(const void* data, uint8_t len) {
 
     if(flushByte || i == 0) {
       if (byteValue < 16) {
-        hex += "0";
+        frame += "0";
       }
-      hex += String(byteValue, HEX);
-      SerialUSB.println(String(byteValue, BIN));
+      frame += String(byteValue, HEX);
       byteValue = 0;
     }
   }
-  return hex;
+  return frame;
 }
 
 bool sendSigfox(const void* data, uint8_t len) {
