@@ -9,7 +9,6 @@ namespace CMS.Models
     {
         public BoardModel()
         {
-            
         }
 
         public BoardModel(string name, string deviceId)
@@ -17,6 +16,7 @@ namespace CMS.Models
             this.Name = name;
             this.DeviceId = deviceId;
         }
+
         public string Name { get; set; }
 
         public string DeviceId { get; set; }

@@ -1,0 +1,33 @@
+@using CMS.Models
+@model CMS.Models.BoardModel
+
+<h1>Board Register</h1>
+
+@using (Html.BeginForm("BoardRegister", "Board", FormMethod.Post))
+{
+    <div class="form-horizontal">
+        <div class="form-group">
+            <label asp-for="Name" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Name" class="form-control" placeholder="Type your device name" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="DeviceId" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="DeviceId" class="form-control" placeholder="Type your device id" />
+                <span asp-validation-for="DeviceId" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Register" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    <a asp-action="Index">Back to your devices</a>
+</div>

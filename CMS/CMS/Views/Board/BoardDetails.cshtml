@@ -3,5 +3,17 @@
 
 <title>ViewData.title</title>
 
-<h1>@Model.Name</h1>
+@if (Model != null)
+{
+    <h1>@Model.Name</h1>
+}
+else
+{
+    <span>
+        <strong>
+            THIS DEVICES DOES IS NOT FOUND
+        </strong>
+    </span>
+}
+
 
