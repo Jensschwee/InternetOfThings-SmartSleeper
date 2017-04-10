@@ -1,6 +1,50 @@
-@model CMS.Models.BoardModel
+@using CMS.Models
+@model List<CMS.Models.BoardModel>
 
 <title>ViewData.title</title>
 
-
-
+<h1>Devices</h1>
+@if (Model != null)
+{
+    <table class="table table-hover table-striped">
+        <thead >
+        <tr>
+            <td>
+                Select
+            </td>
+            <td>
+                #
+            </td>
+            <td>
+                Device Name
+            </td>
+        </tr>
+        </thead>
+        <tbody>
+        
+        @foreach (BoardModel bord in Model)
+        {
+        <tr>
+            <td>
+                <a href="@Url.Action("BoardDetails", "Board", new {deviceId = bord.DeviceId})">Details</a>
+            </td>
+            <th scope="row" >
+                @bord.DeviceId
+            </th>
+            <td>
+                @bord.Name
+            </td>
+        </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <span>
+        <strong>
+            You do not have any devices. <br />
+            Add your device using XX
+        </strong>
+    </span>
+}

@@ -7,10 +7,18 @@ namespace CMS.Models
 {
     public class BoardModel
     {
+        public BoardModel()
+        {
+            
+        }
+
+        public BoardModel(string name, string deviceId)
+        {
+            this.Name = name;
+            this.DeviceId = deviceId;
+        }
         public string Name { get; set; }
 
         public string DeviceId { get; set; }
-
-
     }
 }
