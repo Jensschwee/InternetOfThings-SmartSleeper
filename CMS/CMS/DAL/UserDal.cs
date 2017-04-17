@@ -22,5 +22,19 @@ namespace CMS.DAL
             }
             return true;
         }
+
+        public async Task<bool> RegisterUser(string username, string password)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Backend.GetBackendBaseAdress() + "users/create/" + username + "/" + password);
+                HttpResponseMessage response = await client.PostAsync(client.BaseAddress, null);
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+            }
+            return true;
+        }
     }
 }

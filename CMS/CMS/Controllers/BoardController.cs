@@ -16,14 +16,6 @@ namespace CMS.Controllers
     public class BoardController : Controller
     {
         private BoardDal boardDal = new BoardDal();
-        public List<BoardModel> generateModel()
-        {
-            List<BoardModel> lbm = new List<BoardModel>();
-            lbm.Add(new BoardModel("test", "test"));
-            lbm.Add(new BoardModel("test1", "test1"));
-            lbm.Add(new BoardModel("test2", "test2"));
-            return lbm;
-        }
 
         public List<SensorReadingModel> generateSensorReadingModel()
         {
