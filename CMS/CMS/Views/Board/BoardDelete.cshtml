@@ -1,0 +1,39 @@
+﻿@using CMS.Models
+@model CMS.Models.BoardModel
+
+<title>ViewData.title</title>
+<h1>@ViewData["title"]</h1>
+
+@if (@Model != null)
+{
+    using (Html.BeginForm("BoardDelete", "Board", FormMethod.Post))
+    {
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label asp-for="device_name" class="col-md-2 control-label">Device Name</label>
+                <div class="col-md-10">
+                    <input asp-for="device_name" readonly="readonly" class="form-control" placeholder="Type your device name" value=@Model.device_name/>
+                    <span asp-validation-for="device_name" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="deviceID" class="col-md-2 control-label">Device ID</label>
+                <div class="col-md-10">
+                    <input asp-for="deviceID" readonly="readonly" class="form-control" placeholder="Type your device id" value=@Model.deviceID />
+                    <span asp-validation-for="deviceID" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Delete" class="btn btn-danger" />
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <strong>
+        You do not have this devices. <br/>
+    </strong>
+}

@@ -19,8 +19,8 @@
                 <input class="form-control" type="password" asp-for="Password" id="txtPassword" placeholder="Password" required />
             </div>
             <div>
-                <input type="submit" class="btn-primary" value="Logion" />
-                <input type="button"  class="btn-default"  value="Register" onclick="@("window.location.href='" + @Url.Action("UserRegister", "User") + "'");" />
+                <input type="submit" class="btn btn-primary" value="Login"/>
+                <input type="button" class="btn btn-default" value="Register" onclick="@("window.location.href='" + @Url.Action("UserRegister", "User") + "'");"/>
             </div>
         </div>
     }

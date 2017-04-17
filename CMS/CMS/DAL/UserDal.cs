@@ -20,7 +20,7 @@ namespace CMS.DAL
                     return true;
                 }
             }
-            return true;
+            return false;
         }
 
         public async Task<bool> RegisterUser(string username, string password)
@@ -34,7 +34,7 @@ namespace CMS.DAL
                     return true;
                 }
             }
-            return true;
+            return false;
         }
     }
 }

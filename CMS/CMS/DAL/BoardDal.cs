@@ -34,14 +34,45 @@ namespace CMS.DAL
                 if (response.IsSuccessStatusCode)
                 {
                     string responseBody = await response.Content.ReadAsStringAsync();
-                    var test = JsonConvert.DeserializeObject<List<BoardModel>>(responseBody);
-                    if (test != null)
+                    var boards = JsonConvert.DeserializeObject<List<BoardModel>>(responseBody);
+                    if (boards != null)
                     {
-                        return test;
+                        return boards;
                     }
                 }
                 return null;
             }
+        }
+
+        public async Task<BoardModel> GetBoards(string currentUser, string deviceId)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Backend.GetBackendBaseAdress() + "users/device/" + currentUser + "/" + deviceId);
+                HttpResponseMessage response = await client.GetAsync("");
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    var board = JsonConvert.DeserializeObject<BoardModel>(responseBody);
+                    if (board != null)
+                    {
+                        return board;
+                    }
+                }
+                return null;
+            }
+        }
+
+        public async Task<bool> DeleteBoard(BoardModel board, string currentUser)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Backend.GetBackendBaseAdress() + "users/devices/" + currentUser + "/" + board.deviceID);
+                HttpResponseMessage response = await client.DeleteAsync(client.BaseAddress);
+                if (response.IsSuccessStatusCode)
+                    return true;
+            }
+            return false;
         }
 
 

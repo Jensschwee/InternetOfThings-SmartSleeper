@@ -38,10 +38,29 @@ namespace CMS.Controllers
             return View(generateSensorReadingModel());
         }
 
+        public IActionResult BoardDelete(string deviceId)
+        {
+            var identity = (ClaimsIdentity)User.Identity;
+            ViewData["title"] = "Board Delete";
+            return View(boardDal.GetBoards(identity.Name, deviceId).Result);
+        }
+
+        [HttpPost]
+        public IActionResult BoardDelete(BoardModel board)
+        {
+            var identity = (ClaimsIdentity)User.Identity;
+
+            bool isSaved = boardDal.DeleteBoard(board, identity.Name).Result;
+
+            if (isSaved)
+                return RedirectToAction("Index");
+
+            return RedirectToActionPermanent("BoardDelete", new {deviceId = board.deviceID});
+        }
+
         [HttpGet]
         public IActionResult BoardRegister()
         {
-
             ViewData["title"] = "Board Register";
             return View();
         }
