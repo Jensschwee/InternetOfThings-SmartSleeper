@@ -7,16 +7,16 @@ var w = 900,
 var monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
 
-var maxDataPointsForDots = 50,
-    transitionDuration = 1000;
-
-var svg = null,
-    yAxisGroup = null,
-    xAxisGroup = null,
-    dataCirclesGroup = null,
-    dataLinesGroup = null;
-
 function draw(generateData, chart, tooltipLabel) {
+    var maxDataPointsForDots = 50,
+        transitionDuration = 1000;
+
+    var svg = null,
+        yAxisGroup = null,
+        xAxisGroup = null,
+        dataCirclesGroup = null,
+        dataLinesGroup = null;
+
     var data = generateData;
     var margin = 40;
     var max = d3.max(data, function (d) { return d.value });
@@ -29,7 +29,7 @@ function draw(generateData, chart, tooltipLabel) {
     var yAxis = d3.svg.axis().scale(y).orient('left').tickSize(-w + margin * 2).tickPadding(10);
     var t = null;
 
-    svg = d3.select(chart).select('svg').select('g');
+    var svg = d3.select(chart).select('svg').select('g');
     if (svg.empty()) {
         svg = d3.select(chart)
             .append('svg:svg')
@@ -111,11 +111,11 @@ function draw(generateData, chart, tooltipLabel) {
             return y(d.value);
         });
 
-    dataLines
-        .enter()
-        .append('svg:path')
-        .attr("class", "area")
-        .attr("d", garea(data));
+    //dataLines
+    //    .enter()
+    //    .append('svg:path')
+    //    .attr("class", "area")
+    //    .attr("d", garea(data));
 
     dataLines.enter().append('path')
         .attr('class', 'data-line')

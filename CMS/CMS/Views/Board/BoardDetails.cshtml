@@ -11,7 +11,11 @@
 
 @if (Model != null)
 {
-    <div id="chart"></div>
+    <div id="chartTemperature"></div>
+    <div id="chartHumidity"></div>
+    <div id="chartLux"></div>
+    <div id="chartPressure"></div>
+
 }
 else
 {
@@ -24,8 +28,8 @@ else
 <script src="../js/d3LineChart.js" type="text/javascript"></script>
 
 <script>
-    var getTempFunktion = function generateData() {
-        var data = [];
+   var getTemperatureFunktion = function generateData1() {
+       var data = [];
         @foreach (SensorReadingModel se in Model)
         {
             @:var date = new Date();
@@ -38,5 +42,54 @@ else
         return data;
     }
 
-    draw(getTempFunktion(), "#chart", "Temperature");
+    draw(getTemperatureFunktion(), "#chartTemperature", "Temperature");
+
+    var getHumidityFunktion = function generateData2() {
+       var data = [];
+        @foreach (SensorReadingModel se in Model)
+        {
+            @:var date = new Date();
+            @:date.setYear(@se.SensorTime.Year);
+            @:date.setMonth(@se.SensorTime.Month-1);
+            @:date.setDate(@se.SensorTime.Day);
+            @:date.setHours(@se.SensorTime.Hour, @se.SensorTime.Minute, @se.SensorTime.Second, @se.SensorTime.Millisecond);
+            @:data.push({ 'value': @se.humidity.ToString().Replace(",","."), 'date': date });
+        }
+        return data;
+    }
+
+    draw(getHumidityFunktion(), "#chartHumidity", "Humidity");
+
+    var getLuxFunktion = function generateData3() {
+       var data = [];
+        @foreach (SensorReadingModel se in Model)
+        {
+            @:var date = new Date();
+            @:date.setYear(@se.SensorTime.Year);
+            @:date.setMonth(@se.SensorTime.Month-1);
+            @:date.setDate(@se.SensorTime.Day);
+            @:date.setHours(@se.SensorTime.Hour, @se.SensorTime.Minute, @se.SensorTime.Second, @se.SensorTime.Millisecond);
+            @:data.push({ 'value': @se.lux.ToString().Replace(",","."), 'date': date });
+        }
+        return data;
+    }
+
+    draw(getLuxFunktion(), "#chartLux", "Lux");
+
+    var getPressureFunktion = function generateData4() {
+       var data = [];
+        @foreach (SensorReadingModel se in Model)
+        {
+            @:var date = new Date();
+            @:date.setYear(@se.SensorTime.Year);
+            @:date.setMonth(@se.SensorTime.Month-1);
+            @:date.setDate(@se.SensorTime.Day);
+            @:date.setHours(@se.SensorTime.Hour, @se.SensorTime.Minute, @se.SensorTime.Second, @se.SensorTime.Millisecond);
+            @:data.push({ 'value': @se.pressure.ToString().Replace(",","."), 'date': date });
+        }
+        return data;
+    }
+
+    draw(getPressureFunktion(), "#chartPressure", "Pressure");
+
 </script>
