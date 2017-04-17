@@ -17,7 +17,7 @@ namespace CMS.DAL
         {
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(Backend.GetBackendBaseAdress() + "device/register/" + currentUser + "/" + board.deviceID + "/" + board.device_name);
+                client.BaseAddress = new Uri(Backend.GetBackendBaseAdress() + "users/devices/register/" + currentUser + "/" + board.deviceID + "/" + board.device_name);
                 HttpResponseMessage response = await client.PostAsync(client.BaseAddress, null);
                 if (response.IsSuccessStatusCode)
                     return true;
@@ -42,7 +42,6 @@ namespace CMS.DAL
                 }
                 return null;
             }
-            return null;
         }
 
 
