@@ -1,11 +1,17 @@
 ﻿@using CMS.Models
-@model CMS.Models.BoardModel
+@using Microsoft.CodeAnalysis.CSharp.Syntax
+@model List<CMS.Models.SensorReadingModel>
 
 <title>ViewData.title</title>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
+<script src="http://d3js.org/d3.v3.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="../js/jquery.tipsy.js"></script>
+<link href="../css/tipsy.css" rel="stylesheet" type="text/css" />
+<link href="../css/d3LineChart.css" rel="stylesheet" type="text/css" />
 
 @if (Model != null)
 {
-    <h1>@Model.Name</h1>
+    <div id="chart"></div>
 }
 else
 {
@@ -15,5 +21,22 @@ else
         </strong>
     </span>
 }
+<script src="../js/d3LineChart.js" type="text/javascript"></script>
 
+<script>
+    var getTempFunktion = function generateData() {
+        var data = [];
+        @foreach (SensorReadingModel se in Model)
+        {
+            @:var date = new Date();
+            @:date.setYear(@se.Time.Year);
+            @:date.setMonth(@se.Time.Month-1);
+            @:date.setDate(@se.Time.Day);
+            @:date.setHours(@se.Time.Hour, @se.Time.Minute, @se.Time.Second, @se.Time.Millisecond);
+            @:data.push({ 'value': @se.Temperature, 'date': date });
+        }
+        return data;
+    }
 
+    draw(getTempFunktion(), "#chart");
+</script>

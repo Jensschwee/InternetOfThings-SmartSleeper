@@ -7,6 +7,14 @@
   <PropertyGroup>
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81;</PackageTargetFallback>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="wwwroot\css\d3LineChart.css" />
+    <Content Include="wwwroot\css\tipsy.css" />
+    <Content Include="wwwroot\js\d3LineChart.js" />
+    <Content Include="wwwroot\js\jquery.tipsy" />
+    <Content Include="wwwroot\js\jquery.tipsy.js" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />

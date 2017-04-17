@@ -25,6 +25,14 @@ namespace CMS.Controllers
             return lbm;
         }
 
+        public List<SensorReadingModel> generateSensorReadingModel()
+        {
+            List<SensorReadingModel> sem = new List<SensorReadingModel>();
+            sem.Add(new SensorReadingModel(DateTime.Now, 2));
+            sem.Add(new SensorReadingModel(DateTime.Now.AddDays(1), 50));
+            return sem;
+        }
+
         public IActionResult Index()
         {
             ViewData["title"] = "Board";
@@ -34,7 +42,7 @@ namespace CMS.Controllers
         public IActionResult BoardDetails(string deviceId)
         {
             ViewData["title"] = "Board Details";
-            return View(generateModel().FindLast(t => t.DeviceId == deviceId));
+            return View(generateSensorReadingModel());
         }
 
         [HttpGet]
@@ -54,8 +62,6 @@ namespace CMS.Controllers
             //if (isSaved)
             return RedirectToAction("Index", "Board");
         }
-
-        
 
     }
 }

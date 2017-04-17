@@ -15,6 +15,12 @@ namespace CMS.Models
             Temperature = temperature;
         }
 
+        public SensorReadingModel(DateTime time, double temperature)
+        {
+            Time = time;
+            Temperature = temperature;
+        }
+
         private DateTime _dateOrigin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
         private DateTime _time;
 
