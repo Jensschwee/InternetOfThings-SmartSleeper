@@ -9,33 +9,25 @@ namespace CMS.Models
     {
         public SensorReadingModel() { }
 
-        public SensorReadingModel(double time, double temperature)
+        public SensorReadingModel(double temperature)
         {
-            Time = _dateOrigin.AddSeconds(Convert.ToDouble(time));
-            Temperature = temperature;
+            this.temperature = temperature;
         }
 
-        public SensorReadingModel(DateTime time, double temperature)
-        {
-            Time = time;
-            Temperature = temperature;
-        }
+        public int id { get; set; }
+        public string deviceID { get; set; }
+        public string server_time { get; set; }
+        public string sensor_time { get; set; }
 
-        private DateTime _dateOrigin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-        private DateTime _time;
+        public DateTime SensorTime => Convert.ToDateTime(sensor_time);
 
-        public DateTime Time
-        {
-            get { return _time; }
-            set { _time = value; }
-        }
+        public DateTime ServerTime => Convert.ToDateTime(server_time);
 
-        public double Temperature { get; set; }
-
-        public double Humidity { get; set; }
-
-        public double Lux { get; set; }
-
-        public int? Pressure { get; set; }
+        public string system { get; set; }
+        public double humidity { get; set; }
+        public double lux { get; set; }
+        public double temperature { get; set; }
+        public int pressure { get; set; }
+        public string raw_data { get; set; }
     }
 }

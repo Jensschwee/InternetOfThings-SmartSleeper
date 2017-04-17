@@ -12,13 +12,12 @@
 @if (Model != null)
 {
     <div id="chart"></div>
-
 }
 else
 {
     <span>
         <strong>
-            THIS DEVICES DOES IS NOT FOUND
+            THIS DEVICES IS NOT FOUND
         </strong>
     </span>
 }
@@ -30,11 +29,11 @@ else
         @foreach (SensorReadingModel se in Model)
         {
             @:var date = new Date();
-            @:date.setYear(@se.Time.Year);
-            @:date.setMonth(@se.Time.Month-1);
-            @:date.setDate(@se.Time.Day);
-            @:date.setHours(@se.Time.Hour, @se.Time.Minute, @se.Time.Second, @se.Time.Millisecond);
-            @:data.push({ 'value': @se.Temperature, 'date': date });
+            @:date.setYear(@se.SensorTime.Year);
+            @:date.setMonth(@se.SensorTime.Month-1);
+            @:date.setDate(@se.SensorTime.Day);
+            @:date.setHours(@se.SensorTime.Hour, @se.SensorTime.Minute, @se.SensorTime.Second, @se.SensorTime.Millisecond);
+            @:data.push({ 'value': @se.temperature.ToString().Replace(",","."), 'date': date });
         }
         return data;
     }

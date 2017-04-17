@@ -16,14 +16,8 @@ namespace CMS.Controllers
     public class BoardController : Controller
     {
         private BoardDal boardDal = new BoardDal();
+        private SensorReadingDal sensorReadingDal = new SensorReadingDal();
 
-        public List<SensorReadingModel> generateSensorReadingModel()
-        {
-            List<SensorReadingModel> sem = new List<SensorReadingModel>();
-            sem.Add(new SensorReadingModel(DateTime.Now, 2));
-            sem.Add(new SensorReadingModel(DateTime.Now.AddDays(1), 50));
-            return sem;
-        }
 
         public IActionResult Index()
         {
@@ -35,7 +29,7 @@ namespace CMS.Controllers
         public IActionResult BoardDetails(string deviceId)
         {
             ViewData["title"] = "Board Details";
-            return View(generateSensorReadingModel());
+            return View(sensorReadingDal.GetAllSensorReadings(deviceId).Result);
         }
 
         public IActionResult BoardDelete(string deviceId)
