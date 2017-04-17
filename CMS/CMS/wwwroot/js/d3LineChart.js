@@ -16,7 +16,7 @@ var svg = null,
     dataCirclesGroup = null,
     dataLinesGroup = null;
 
-function draw(generateData, chart) {
+function draw(generateData, chart, tooltipLabel) {
     var data = generateData;
     var margin = 40;
     var max = d3.max(data, function (d) { return d.value });
@@ -132,11 +132,11 @@ function draw(generateData, chart) {
         .attr('y2', function(d) { return yScale(d.value); });
     */
 
-    dataLines.transition()
-        .attr("d", line)
-        .duration(transitionDuration)
-        .style('opacity', 1)
-        .attr("transform", function (d) { return "translate(" + x(d.date) + "," + y(d.value) + ")"; });
+    //dataLines.transition()
+    //    .attr("d", line)
+    //    .duration(transitionDuration)
+    //    .style('opacity', 1)
+    //    .attr("transform", function (d) { return "translate(" + x(d.date) + "," + y(d.value) + ")"; });
 
     dataLines.exit()
         .transition()
@@ -190,13 +190,21 @@ function draw(generateData, chart) {
         .style("opacity", 1e-6)
         .remove();
 
+    svg.append("text")
+        .attr("class", "y label")
+        .attr("text-anchor", "end")
+        .attr("y", 6)
+        .attr("dy", ".75em")
+        .attr("transform", "rotate(-90)")
+        .text(tooltipLabel);
+
     $('svg circle').tipsy({
         gravity: 'w',
         html: true,
         title: function () {
             var d = this.__data__;
             var pDate = d.date;
-            return 'Date: ' + pDate.getDate() + " " + monthNames[pDate.getMonth()] + " " + pDate.getFullYear() + '<br>Value: ' + d.value;
+            return 'Date: ' + pDate.getDate() + " " + monthNames[pDate.getMonth()] + " " + pDate.getFullYear() + '<br>'+tooltipLabel+': ' + d.value;
         }
     });
 }
