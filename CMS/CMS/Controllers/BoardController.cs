@@ -35,8 +35,9 @@ namespace CMS.Controllers
 
         public IActionResult Index()
         {
+            var identity = (ClaimsIdentity)User.Identity;
             ViewData["title"] = "Board";
-            return View(generateModel());
+            return View(boardDal.GetAllBoards(identity.Name).Result);
         }
 
         public IActionResult BoardDetails(string deviceId)

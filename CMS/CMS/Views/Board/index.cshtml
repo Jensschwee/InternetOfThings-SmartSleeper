@@ -26,13 +26,13 @@
         {
         <tr>
             <td>
-                <a href="@Url.Action("BoardDetails", "Board", new {deviceId = bord.DeviceId})">Details</a>
+                <a href="@Url.Action("BoardDetails", "Board", new {deviceId = bord.deviceID})">Details</a>
             </td>
             <th scope="row" >
-                @bord.DeviceId
+                @bord.deviceID
             </th>
             <td>
-                @bord.Name
+                @bord.device_name
             </td>
         </tr>
         }
