@@ -22,17 +22,18 @@
         </thead>
         <tbody>
         
-        @foreach (BoardModel bord in Model)
+        @foreach (BoardModel board in Model)
         {
         <tr>
             <td>
-                <a href="@Url.Action("BoardDetails", "Board", new {deviceId = bord.DeviceId})">Details</a>
+                <input type="button" class="btn btn-primary" value="Details" onclick="@("window.location.href='" + @Url.Action("BoardDetails", "Board", new {deviceId = board.deviceID}) + "'");" />
+                <input type="button" class="btn btn-danger" value="Delete" onclick="@("window.location.href='" + @Url.Action("BoardDelete", "Board", new {deviceId = board.deviceID}) + "'");" />
             </td>
             <th scope="row" >
-                @bord.DeviceId
+                @board.deviceID
             </th>
             <td>
-                @bord.Name
+                @board.device_name
             </td>
         </tr>
         }
@@ -44,7 +45,9 @@ else
     <span>
         <strong>
             You do not have any devices. <br />
-            Add your device using XX
+            Add your device using the Register button
         </strong>
+        <br />
     </span>
 }
+<input type="button" class="btn btn-default" value="Register new device" onclick="@("window.location.href='" + @Url.Action("BoardRegister", "Board") + "'");" />
