@@ -9,6 +9,8 @@
 <script type="text/javascript" src="../js/jquery.tipsy.js"></script>
 <link href="../css/tipsy.css" rel="stylesheet" type="text/css" />
 <link href="../css/d3LineChart.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/box.js"></script>
+
 
 @if (Model != null)
 {
@@ -17,14 +19,15 @@
     <input type="button" class="btn btn-primary" value="Last Day" onclick="@("window.location.href='" + @Url.Action("BoardDetails", "Board", new {deviceId = ViewBag.deviceId, timeFrom = DateTimeOffset.UtcNow.AddDays(-1).ToUnixTimeSeconds(), timeTo = DateTimeOffset.UtcNow.ToUnixTimeSeconds()}) + "'");" />
     if (Model.Count != 0)
     {
-       <div id="chartTemperature"></div>
+        <div id="chartBoxplot"></div>
+        <div id="chartTemperature"></div>
         <div id="chartHumidity"></div>
         <div id="chartLux"></div>
         <div id="chartPressure"></div>
     }
     else
     {
-        <br/>
+        <br />
         <span>
             <strong>
                 THERE IS NO DATA FOR THE DEVICE
@@ -102,9 +105,84 @@ else
             @:date.setHours(@se.SensorTime.Hour, @se.SensorTime.Minute, @se.SensorTime.Second, @se.SensorTime.Millisecond);
             @:data.push({ 'value': @se.pressure.ToString().Replace(",","."), 'date': date });
         }
+       return data;
+   }
+
+    draw(getPressureFunktion(), "#chartPressure", "Pressure");
+
+    var getDataFunktion = function generateData5() {
+        var data = [];
+        var pressure = [];
+        var lux = [];
+        var humidity = [];
+        var temperature = [];
+
+       @foreach (SensorReadingModel se in Model)
+       {
+           @:pressure.push(@se.pressure.ToString().Replace(",", "."));
+       }
+        @foreach (SensorReadingModel se in Model)
+       {
+            @:lux.push(@se.lux.ToString().Replace(",", "."));
+       }
+         @foreach (SensorReadingModel se in Model)
+       {
+            @:humidity.push(@se.humidity.ToString().Replace(",", "."));
+       }
+         @foreach (SensorReadingModel se in Model)
+       {
+            @:temperature.push(@se.temperature.ToString().Replace(",", "."));
+       }
+        //data.push(pressure);
+        //data.push(lux);
+        //data.push(humidity);
+        //data.push(temperature);
         return data;
     }
 
-    draw(getPressureFunktion(), "#chartPressure", "Pressure");
+    var margin = { top: 10, right: 50, bottom: 20, left: 50 },
+        width = 120 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
+
+    var min = Infinity,
+        max = -Infinity;
+
+    var chart = d3.box()
+        .whiskers(iqr(1.5))
+        .width(width)
+        .height(height);
+
+    // Returns a function to compute the interquartile range.
+    function iqr(k) {
+        return function (d, i) {
+            var q1 = d.quartiles[0],
+                q3 = d.quartiles[2],
+                iqr = (q3 - q1) * k,
+                i = -1,
+                j = d.length;
+            while (d[++i] < q1 - iqr);
+            while (d[--j] > q3 + iqr);
+            return [i, j];
+        };
+    }
+
+    jQuery.each(getDataFunktion(), function (i, val) {
+        val.forEach(function (x) {
+            if (x > max) max = x;
+            if (x < min) min = x;
+        });
+
+        chart.domain([min, max]);
+        console.log(val);
+        var svg = d3.select("#chartBoxplot").selectAll("svg")
+            .data([val])
+            .enter().append("svg")
+            .attr("class", "box")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.bottom + margin.top)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+            .call(chart);
+    });
 
 </script>
