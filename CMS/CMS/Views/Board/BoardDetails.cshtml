@@ -1,4 +1,5 @@
 ﻿@using CMS.Models
+@using Microsoft.AspNetCore.Http
 @using Microsoft.CodeAnalysis.CSharp.Syntax
 @model List<CMS.Models.SensorReadingModel>
 
@@ -11,14 +12,25 @@
 
 @if (Model != null)
 {
-    <input type="button" class="btn btn-primary" value="Last Month" onclick="@("window.location.href='" + @Url.Action("BoardDetails", "Board", new {deviceId = Model[0].deviceID, timeFrom = DateTimeOffset.Now.AddMonths(-1).ToUnixTimeSeconds(), timeTo = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }) + "'");" />
-    <input type="button" class="btn btn-primary" value="Last 7 Days" onclick="@("window.location.href='" + @Url.Action("BoardDetails", "Board", new {deviceId = Model[0].deviceID, timeFrom = DateTimeOffset.UtcNow.AddDays(-7).ToUnixTimeSeconds(), timeTo = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }) + "'");" />
-    <input type="button" class="btn btn-primary" value="Last Day" onclick="@("window.location.href='" + @Url.Action("BoardDetails", "Board", new {deviceId = Model[0].deviceID, timeFrom = DateTimeOffset.UtcNow.AddDays(-1).ToUnixTimeSeconds(), timeTo = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }) + "'");" />
-    <div id="chartTemperature"></div>
-    <div id="chartHumidity"></div>
-    <div id="chartLux"></div>
-    <div id="chartPressure"></div>
-
+    <input type="button" class="btn btn-primary" value="Last Month" onclick="@("window.location.href='" + @Url.Action("BoardDetails", "Board", new {deviceId =  ViewBag.deviceId, timeFrom = DateTimeOffset.Now.AddMonths(-1).ToUnixTimeSeconds(), timeTo = DateTimeOffset.UtcNow.ToUnixTimeSeconds()}) + "'");" />
+    <input type="button" class="btn btn-primary" value="Last 7 Days" onclick="@("window.location.href='" + @Url.Action("BoardDetails", "Board", new {deviceId = ViewBag.deviceId, timeFrom = DateTimeOffset.UtcNow.AddDays(-7).ToUnixTimeSeconds(), timeTo = DateTimeOffset.UtcNow.ToUnixTimeSeconds()}) + "'");" />
+    <input type="button" class="btn btn-primary" value="Last Day" onclick="@("window.location.href='" + @Url.Action("BoardDetails", "Board", new {deviceId = ViewBag.deviceId, timeFrom = DateTimeOffset.UtcNow.AddDays(-1).ToUnixTimeSeconds(), timeTo = DateTimeOffset.UtcNow.ToUnixTimeSeconds()}) + "'");" />
+    if (Model.Count != 0)
+    {
+       <div id="chartTemperature"></div>
+        <div id="chartHumidity"></div>
+        <div id="chartLux"></div>
+        <div id="chartPressure"></div>
+    }
+    else
+    {
+        <br/>
+        <span>
+            <strong>
+                THERE IS NO DATA FOR THE DEVICE
+            </strong>
+        </span>
+    }
 }
 else
 {
