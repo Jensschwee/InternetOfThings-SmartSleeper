@@ -39,5 +39,32 @@ namespace CMS.DAL
             }
         }
 
+        public async Task<List<SensorReadingModel>> GetAllSensorReadings(string deviceId, long timeFrom, long timeTo)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Backend.GetBackendBaseAdress() + "sensorreadings/device/" + deviceId + "?from="+ timeFrom + "&to=" + timeTo);
+                HttpResponseMessage response = await client.GetAsync("");
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    var readings = JsonConvert.DeserializeObject<List<SensorReadingModel>>(responseBody);
+                    if (readings != null)
+                    {
+                        return readings;
+                    }
+                }
+                else
+                {
+                    var readings = JsonConvert.DeserializeObject<List<SensorReadingModel>>(teststring);
+                    if (readings != null)
+                    {
+                        return readings;
+                    }
+                }
+                return null;
+            }
+        }
+
     }
 }

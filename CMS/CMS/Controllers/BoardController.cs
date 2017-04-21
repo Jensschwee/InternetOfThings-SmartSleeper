@@ -26,10 +26,12 @@ namespace CMS.Controllers
             return View(boardDal.GetAllBoards(identity.Name).Result);
         }
 
-        public IActionResult BoardDetails(string deviceId)
+        public IActionResult BoardDetails(string deviceId, long? timeFrom, long? timeTo )
         {
             ViewData["title"] = "Board Details";
-            return View(sensorReadingDal.GetAllSensorReadings(deviceId).Result);
+            if(!timeFrom.HasValue && !timeTo.HasValue)
+                return View(sensorReadingDal.GetAllSensorReadings(deviceId).Result);
+            return View(sensorReadingDal.GetAllSensorReadings(deviceId, timeFrom.Value, timeTo.Value).Result);
         }
 
         public IActionResult BoardDelete(string deviceId)

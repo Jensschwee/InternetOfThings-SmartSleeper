@@ -11,6 +11,9 @@
 
 @if (Model != null)
 {
+    <input type="button" class="btn btn-primary" value="Last Month" onclick="@("window.location.href='" + @Url.Action("BoardDetails", "Board", new {deviceId = Model[0].deviceID, timeFrom = DateTimeOffset.Now.AddMonths(-1).ToUnixTimeSeconds(), timeTo = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }) + "'");" />
+    <input type="button" class="btn btn-primary" value="Last 7 Days" onclick="@("window.location.href='" + @Url.Action("BoardDetails", "Board", new {deviceId = Model[0].deviceID, timeFrom = DateTimeOffset.UtcNow.AddDays(-7).ToUnixTimeSeconds(), timeTo = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }) + "'");" />
+    <input type="button" class="btn btn-primary" value="Last Day" onclick="@("window.location.href='" + @Url.Action("BoardDetails", "Board", new {deviceId = Model[0].deviceID, timeFrom = DateTimeOffset.UtcNow.AddDays(-1).ToUnixTimeSeconds(), timeTo = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }) + "'");" />
     <div id="chartTemperature"></div>
     <div id="chartHumidity"></div>
     <div id="chartLux"></div>
