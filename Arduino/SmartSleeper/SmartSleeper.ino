@@ -6,7 +6,7 @@
 #include <Arduino.h>
 
 #define SIGFOX_MAX_FRAME_LENGTH 12
-#define INTERVAL 10000
+#define INTERVAL 120000
 #define DEBUG 1
 
 struct data {
@@ -234,12 +234,14 @@ String getSigfoxFrame(const void* data, uint8_t len) {
   // Encode array to hexadecimal string
   uint8_t byteValue = 0;
   for (int i = len - 1; i >= 0; i--) {
-    boolean flushByte = (i + 1) % 8 == 0;
+    SerialUSB.println(i);
+    boolean flushByte = i % 8 == 0;
     
     byteValue <<= 1;
     byteValue |= (uint8_t) b[i];
 
     if(flushByte || i == 0) {
+      SerialUSB.println("flush");
       if (byteValue < 16) {
         frame += "0";
       }
