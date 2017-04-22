@@ -10,8 +10,13 @@
 <link href="../css/tipsy.css" rel="stylesheet" type="text/css" />
 <link href="../css/d3LineChart.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="../js/box.js"></script>
-
-
+<link href="../css/box.css" rel="stylesheet" type="text/css" />
+<style>
+    .pageHolder {
+        display: inline-block;
+        margin: 10px;
+    }
+</style>
 @if (Model != null)
 {
     <input type="button" class="btn btn-primary" value="Last Month" onclick="@("window.location.href='" + @Url.Action("BoardDetails", "Board", new {deviceId =  ViewBag.deviceId, timeFrom = DateTimeOffset.Now.AddMonths(-1).ToUnixTimeSeconds(), timeTo = DateTimeOffset.UtcNow.ToUnixTimeSeconds()}) + "'");" />
@@ -19,11 +24,22 @@
     <input type="button" class="btn btn-primary" value="Last Day" onclick="@("window.location.href='" + @Url.Action("BoardDetails", "Board", new {deviceId = ViewBag.deviceId, timeFrom = DateTimeOffset.UtcNow.AddDays(-1).ToUnixTimeSeconds(), timeTo = DateTimeOffset.UtcNow.ToUnixTimeSeconds()}) + "'");" />
     if (Model.Count != 0)
     {
-        <div id="chartBoxplot"></div>
-        <div id="chartTemperature"></div>
-        <div id="chartHumidity"></div>
-        <div id="chartLux"></div>
-        <div id="chartPressure"></div>
+        <div class='pageHolder'>
+            <div class='pageHolder' id="chartTemperatureBoxplot"></div>
+            <div class='pageHolder' id="chartTemperature"></div>
+        </div>
+        <div class='pageHolder'>
+            <div class='pageHolder' id="chartHumidityBoxplot"></div>
+            <div class='pageHolder' id="chartHumidity"></div>
+        </div>
+        <div class='pageHolder'>
+            <div class='pageHolder' id="chartLuxBoxplot"></div>
+            <div class='pageHolder' id="chartLux"></div>
+        </div>
+        <div class='pageHolder'>
+            <div class='pageHolder' id="chartPressureBoxplot"></div>
+            <div class='pageHolder' id="chartPressure"></div>
+        </div>
     }
     else
     {
@@ -133,16 +149,18 @@ else
        {
             @:temperature.push(@se.temperature.ToString().Replace(",", "."));
        }
-        //data.push(pressure);
-        //data.push(lux);
-        //data.push(humidity);
-        //data.push(temperature);
+        data.push(pressure);
+        data.push(lux);
+        data.push(humidity);
+        data.push(temperature);
         return data;
     }
 
+
+
     var margin = { top: 10, right: 50, bottom: 20, left: 50 },
         width = 120 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
+        height = 450 - margin.top - margin.bottom;
 
     var min = Infinity,
         max = -Infinity;
@@ -166,16 +184,18 @@ else
         };
     }
 
-    jQuery.each(getDataFunktion(), function (i, val) {
-        val.forEach(function (x) {
+
+
+
+
+    var drawBoxPlot = function drawBox(plot, data) {
+        data.forEach(function (x) {
             if (x > max) max = x;
             if (x < min) min = x;
         });
-
         chart.domain([min, max]);
-        console.log(val);
-        var svg = d3.select("#chartBoxplot").selectAll("svg")
-            .data([val])
+        var svg = d3.select(plot).selectAll("svg")
+            .data([data])
             .enter().append("svg")
             .attr("class", "box")
             .attr("width", width + margin.left + margin.right)
@@ -183,6 +203,12 @@ else
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
             .call(chart);
-    });
+    }
 
+   //console.log(getDataFunktion()[3]);
+
+    drawBoxPlot("#chartTemperatureBoxplot", getDataFunktion()[3]);
+    drawBoxPlot("#chartHumidityBoxplot", getDataFunktion()[2]);
+    drawBoxPlot("#chartLuxBoxplot", getDataFunktion()[1]);
+    drawBoxPlot("#chartPressureBoxplot", getDataFunktion()[0]);
 </script>
