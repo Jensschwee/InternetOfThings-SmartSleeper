@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using CMS.Helpers;
 using Newtonsoft.Json;
@@ -17,8 +18,9 @@ namespace CMS.DAL
         {
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(Backend.GetBackendBaseAdress() + "users/devices/register/" + currentUser + "/" + board.deviceID + "/" + board.device_name);
-                HttpResponseMessage response = await client.PostAsync(client.BaseAddress, null);
+                client.BaseAddress = new Uri(Backend.GetBackendBaseAdress() + "users/devices/register");
+                var stringContent = new StringContent(JsonConvert.SerializeObject(new { username = currentUser, deviceid = board.deviceID, devicename = board.device_name}), Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await client.PostAsync(client.BaseAddress, stringContent);
                 if (response.IsSuccessStatusCode)
                     return true;
             }

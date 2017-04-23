@@ -5,7 +5,12 @@
 }
 @model CMS.Models.LoginModel
 <title>ViewData.title</title>
-
+@if (ViewData["ErrorMsg"] != null)
+{
+    <div class="alert alert-warning">
+        <strong>@ViewData["ErrorMsg"] </strong>
+    </div>
+}
 <div>
     @using (Html.BeginForm("Login", "Login", FormMethod.Post))
     {

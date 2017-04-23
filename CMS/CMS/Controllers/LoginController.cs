@@ -17,8 +17,10 @@ namespace CMS.Controllers
     {
         private UserDal _userBackend = new UserDal();
 
-        public IActionResult Index()
+        public IActionResult Index(bool loginFail = false)
         {
+            if(loginFail)
+                ViewData["ErrorMsg"] = "Username and password does not match";
             ViewData["title"] = "Login";
             return View();
         }
@@ -38,7 +40,7 @@ namespace CMS.Controllers
                 await HttpContext.Authentication.SignInAsync("SmartSleeper", principal);
                 return RedirectToAction("Index", "Board");
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { loginFail = true});
         }
 
         [HttpGet]

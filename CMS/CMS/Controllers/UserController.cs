@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using CMS.DAL;
 using Microsoft.AspNetCore.Mvc;
@@ -26,11 +27,19 @@ namespace CMS.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult UserRegister(LoginModel login)
+        public async Task<IActionResult> UserRegister(LoginModel login)
         {
             bool isSaved = userDal.RegisterUser(login.Username, login.Password).Result;
-            if(isSaved)
-                return RedirectToAction("Login", "Login", login);
+            if (isSaved)
+            {
+                var identity = new ClaimsIdentity("SmartSleeper");
+                identity.AddClaim(new Claim(ClaimTypes.Name, login.Username));
+                var principal = new ClaimsPrincipal(identity);
+
+                await HttpContext.Authentication.SignInAsync("SmartSleeper", principal);
+
+                return RedirectToAction("Index", "Board");
+            }
             else
                 return RedirectToAction("UserRegister");
         }
