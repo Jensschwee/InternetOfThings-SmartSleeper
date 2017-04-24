@@ -1,4 +1,5 @@
 ﻿@using CMS.Models
+@using Microsoft.AspNetCore.Http
 @using Microsoft.CodeAnalysis.CSharp.Syntax
 @model List<CMS.Models.SensorReadingModel>
 
@@ -8,14 +9,47 @@
 <script type="text/javascript" src="../js/jquery.tipsy.js"></script>
 <link href="../css/tipsy.css" rel="stylesheet" type="text/css" />
 <link href="../css/d3LineChart.css" rel="stylesheet" type="text/css" />
-
+<script type="text/javascript" src="../js/box.js"></script>
+<link href="../css/box.css" rel="stylesheet" type="text/css" />
+<style>
+    .pageHolder {
+        display: inline-block;
+        margin: 10px;
+    }
+</style>
 @if (Model != null)
 {
-    <div id="chartTemperature"></div>
-    <div id="chartHumidity"></div>
-    <div id="chartLux"></div>
-    <div id="chartPressure"></div>
-
+    <input type="button" class="btn btn-primary" value="Last Month" onclick="@("window.location.href='" + @Url.Action("BoardDetails", "Board", new {deviceId =  ViewBag.deviceId, timeFrom = DateTimeOffset.Now.AddMonths(-1).ToUnixTimeSeconds(), timeTo = DateTimeOffset.UtcNow.ToUnixTimeSeconds()}) + "'");" />
+    <input type="button" class="btn btn-primary" value="Last 7 Days" onclick="@("window.location.href='" + @Url.Action("BoardDetails", "Board", new {deviceId = ViewBag.deviceId, timeFrom = DateTimeOffset.UtcNow.AddDays(-7).ToUnixTimeSeconds(), timeTo = DateTimeOffset.UtcNow.ToUnixTimeSeconds()}) + "'");" />
+    <input type="button" class="btn btn-primary" value="Last Day" onclick="@("window.location.href='" + @Url.Action("BoardDetails", "Board", new {deviceId = ViewBag.deviceId, timeFrom = DateTimeOffset.UtcNow.AddDays(-1).ToUnixTimeSeconds(), timeTo = DateTimeOffset.UtcNow.ToUnixTimeSeconds()}) + "'");" />
+    if (Model.Count != 0)
+    {
+        <div class='pageHolder'>
+            <div class='pageHolder' id="chartTemperatureBoxplot"></div>
+            <div class='pageHolder' id="chartTemperature"></div>
+        </div>
+        <div class='pageHolder'>
+            <div class='pageHolder' id="chartHumidityBoxplot"></div>
+            <div class='pageHolder' id="chartHumidity"></div>
+        </div>
+        <div class='pageHolder'>
+            <div class='pageHolder' id="chartLuxBoxplot"></div>
+            <div class='pageHolder' id="chartLux"></div>
+        </div>
+        <div class='pageHolder'>
+            <div class='pageHolder' id="chartPressureBoxplot"></div>
+            <div class='pageHolder' id="chartPressure"></div>
+        </div>
+    }
+    else
+    {
+        <br />
+        <span>
+            <strong>
+                THERE IS NO DATA FOR THE DEVICE
+            </strong>
+        </span>
+    }
 }
 else
 {
@@ -87,9 +121,94 @@ else
             @:date.setHours(@se.SensorTime.Hour, @se.SensorTime.Minute, @se.SensorTime.Second, @se.SensorTime.Millisecond);
             @:data.push({ 'value': @se.pressure.ToString().Replace(",","."), 'date': date });
         }
-        return data;
-    }
+       return data;
+   }
 
     draw(getPressureFunktion(), "#chartPressure", "Pressure");
 
+    var getDataFunktion = function generateData5() {
+        var data = [];
+        var pressure = [];
+        var lux = [];
+        var humidity = [];
+        var temperature = [];
+
+       @foreach (SensorReadingModel se in Model)
+       {
+           @:pressure.push(@se.pressure.ToString().Replace(",", "."));
+       }
+        @foreach (SensorReadingModel se in Model)
+       {
+            @:lux.push(@se.lux.ToString().Replace(",", "."));
+       }
+         @foreach (SensorReadingModel se in Model)
+       {
+            @:humidity.push(@se.humidity.ToString().Replace(",", "."));
+       }
+         @foreach (SensorReadingModel se in Model)
+       {
+            @:temperature.push(@se.temperature.ToString().Replace(",", "."));
+       }
+        data.push(pressure);
+        data.push(lux);
+        data.push(humidity);
+        data.push(temperature);
+        return data;
+    }
+
+
+
+    var margin = { top: 10, right: 50, bottom: 20, left: 50 },
+        width = 120 - margin.left - margin.right,
+        height = 450 - margin.top - margin.bottom;
+
+    var min = Infinity,
+        max = -Infinity;
+
+    var chart = d3.box()
+        .whiskers(iqr(1.5))
+        .width(width)
+        .height(height);
+
+    // Returns a function to compute the interquartile range.
+    function iqr(k) {
+        return function (d, i) {
+            var q1 = d.quartiles[0],
+                q3 = d.quartiles[2],
+                iqr = (q3 - q1) * k,
+                i = -1,
+                j = d.length;
+            while (d[++i] < q1 - iqr);
+            while (d[--j] > q3 + iqr);
+            return [i, j];
+        };
+    }
+
+
+
+
+
+    var drawBoxPlot = function drawBox(plot, data) {
+        data.forEach(function (x) {
+            if (x > max) max = x;
+            if (x < min) min = x;
+        });
+        chart.domain([min, max]);
+        var svg = d3.select(plot).selectAll("svg")
+            .data([data])
+            .enter().append("svg")
+            .attr("class", "box")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.bottom + margin.top)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+            .call(chart);
+    }
+
+   //console.log(getDataFunktion()[3]);
+
+    drawBoxPlot("#chartTemperatureBoxplot", getDataFunktion()[3]);
+    drawBoxPlot("#chartHumidityBoxplot", getDataFunktion()[2]);
+    drawBoxPlot("#chartLuxBoxplot", getDataFunktion()[1]);
+    drawBoxPlot("#chartPressureBoxplot", getDataFunktion()[0]);
 </script>

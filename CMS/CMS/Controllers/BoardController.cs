@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 using CMS.DAL;
 using CMS.Helpers;
 using CMS.Models;
+using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace CMS.Controllers
 {
@@ -26,10 +28,19 @@ namespace CMS.Controllers
             return View(boardDal.GetAllBoards(identity.Name).Result);
         }
 
-        public IActionResult BoardDetails(string deviceId)
+        public IActionResult BoardDetails(string deviceId, long? timeFrom, long? timeTo )
         {
             ViewData["title"] = "Board Details";
-            return View(sensorReadingDal.GetAllSensorReadings(deviceId).Result);
+            ViewBag.deviceId = deviceId;
+            List<SensorReadingModel> model = null;
+            if (!timeFrom.HasValue && !timeTo.HasValue)
+                model = sensorReadingDal.GetAllSensorReadings(deviceId).Result;
+            else
+                model = sensorReadingDal.GetAllSensorReadings(deviceId, timeFrom.Value, timeTo.Value).Result;
+
+            ViewBag.ModelJson = Json(JsonConvert.SerializeObject(model)).Value;
+
+            return View(model);
         }
 
         public IActionResult BoardDelete(string deviceId)
