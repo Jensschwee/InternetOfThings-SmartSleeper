@@ -6,7 +6,7 @@
 #include <Arduino.h>
 
 #define SIGFOX_MAX_FRAME_LENGTH 12
-#define INTERVAL 300000
+#define INTERVAL 150000
 #define DEBUG 1
 
 struct data {
