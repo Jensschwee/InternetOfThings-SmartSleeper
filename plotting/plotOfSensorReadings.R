@@ -37,7 +37,7 @@ vlines <- data.frame(value = c(as.double(timeWindowClosedLux), as.double(timeWin
 ggplot(data=dataToPlot, aes(x=dataToPlot$time, y=dataToPlot$json_data..index...lux, group= dataToPlot$`Device ID`, color = `Device ID`)) +
   geom_line() +
   geom_point() +
-  ylab("Lux in (Lm)") +
+  ylab("Lux in lx") +
   xlab("") + 
   theme(legend.title = element_text(size=16, face="bold")) +  
   geom_vline(mapping =aes(xintercept=as.double(timeWindow), linetype="Window Open"),size=1) +
@@ -69,7 +69,7 @@ ggplot(data=dataToPlot, aes(x=dataToPlot$time, y=dataToPlot$json_data..index...t
 ggplot(data=dataToPlot, aes(x=dataToPlot$time, y=dataToPlot$json_data..index...pressur, group= dataToPlot$`Device ID`, color = `Device ID`)) +
   geom_line() +
   geom_point() +
-  ylab("Pressure  in mbar") +
+  ylab("Pressure  in hPa") +
   xlab("") + 
   theme(legend.title = element_text(size=16, face="bold"))+
   geom_vline(mapping =aes(xintercept=as.double(timeWindow), linetype="Window Open"),size=1) +
